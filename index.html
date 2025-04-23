@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Boost</title>
+  <meta name="description" content="Social Boost est un outil en ligne puissant pour gérer les recharges de services. Consultez votre solde, rechargez vos commandes, et suivez les statuts en temps réel." />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #1f1c2c, #928dab);
+      color: #fff;
+      animation: fadeIn 1s ease;
+    }
+    header {
+      background: #0f3460;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: #e94560;
+    }
+    nav a {
+      margin-left: 1rem;
+      color: #f9f9f9;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    nav a:hover {
+      color: #ffd369;
+    }
+    main {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 0.8s ease;
+    }
+    input, button {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    input {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+    button {
+      background-color: #e94560;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ff2e63;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Social Boost</h1>
+    <nav>
+      <a href="#">Dashboard</a>
+      <a href="#refill">Refill</a>
+    </nav>
+  </header>
+
+  <main>
+    <p style="color:#ccc; font-size: 1rem; margin-top: -1rem;">Rechargez et gérez vos commandes rapidement avec votre API key.</p>
+
+    <section class="card">
+      <h2>Your Balance</h2>
+      <button onclick="getBalance()">Check Balance</button>
+      <p id="balance"></p>
+    </section>
+
+    <section class="card" id="refill">
+      <h2>Refill Order</h2>
+      <input type="text" id="orderId" placeholder="Enter Order ID" />
+      <button onclick="refillOrder()">Refill</button>
+      <p id="refill-status"></p>
+    </section>
+  </main>
+
+  <script>
+    async function getBalance() {
+      const res = await fetch('https://api.yoursmmprovider.com/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key: '2a7b4e11401a96e8c0f806191a15be2e',
+          action: 'balance'
+        })
+      });
+      const data = await res.json();
+      document.getElementById('balance').textContent = `Balance: ${data.balance} ${data.currency}`;
+    }
+
+    async function refillOrder() {
+      const order = document.getElementById('orderId').value;
+      const res = await fetch('https://api.yoursmmprovider.com/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key: '2a7b4e11401a96e8c0f806191a15be2e',
+          action: 'refill',
+          order: order
+        })
+      });
+      const data = await res.json();
+      document.getElementById('refill-status').textContent = `Refill Status: ${JSON.stringify(data)}`;
+    }
+  </script>
+</body>
+</html>

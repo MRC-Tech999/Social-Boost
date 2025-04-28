@@ -1,136 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Social Boost</title>
-  <meta name="description" content="Social Boost est un outil en ligne puissant pour gérer les recharges de services. Consultez votre solde, rechargez vos commandes, et suivez les statuts en temps réel." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="vcf.png">
+  <title>Générateur de VCF</title>
+
+  <!-- Firebase App (obligatoire) -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app-compat.js"></script>
+
+  <!-- Firebase Database (pour enregistrer les contacts) -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-database-compat.js"></script>
+
   <style>
+    :root {
+      --day-bg: #ffffff;
+      --day-text: #000000;
+      --night-bg: #1c1c1e;
+      --night-text: #f5f5f5;
+    }
+
     body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #1f1c2c, #928dab);
-      color: #fff;
-      animation: fadeIn 1s ease;
+      font-family: Arial, sans-serif;
+      background-color: var(--day-bg);
+      color: var(--day-text);
+      transition: background-color 0.5s ease, color 0.5s ease;
+      padding: 20px;
+      text-align: center;
     }
+
     header {
-      background: #0f3460;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      margin-bottom: 20px;
     }
-    header h1 {
-      margin: 0;
-      font-size: 1.8rem;
-      color: #e94560;
+
+    .container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 300px;
+      text-align: center;
     }
-    nav a {
-      margin-left: 1rem;
-      color: #f9f9f9;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    nav a:hover {
-      color: #ffd369;
-    }
-    main {
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2rem;
-    }
-    .card {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 2rem;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-      animation: fadeInUp 0.8s ease;
-    }
+
     input, button {
+      display: block;
       width: 100%;
-      padding: 0.8rem;
-      margin: 0.5rem 0;
-      border-radius: 8px;
-      border: none;
-      font-size: 1rem;
-      box-sizing: border-box;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
-    input {
-      background-color: #f0f0f0;
-      color: #333;
-    }
+
     button {
-      background-color: #e94560;
-      color: white;
-      font-weight: bold;
       cursor: pointer;
-    }
-    button:hover {
-      background-color: #ff2e63;
-    }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Social Boost</h1>
-    <nav>
-      <a href="#">Dashboard</a>
-      <a href="#refill">Refill</a>
-    </nav>
-  </header>
-
-  <main>
-    <p style="color:#ccc; font-size: 1rem; margin-top: -1rem;">Rechargez et gérez vos commandes rapidement avec votre API key.</p>
-
-    <section class="card">
-      <h2>Your Balance</h2>
-      <button onclick="getBalance()">Check Balance</button>
-      <p id="balance"></p>
-    </section>
-
-    <section class="card" id="refill">
-      <h2>Refill Order</h2>
-      <input type="text" id="orderId" placeholder="Enter Order ID" />
-      <button onclick="refillOrder()">Refill</button>
-      <p id="refill-status"></p>
-    </section>
-  </main>
-
-  <script>
-    async function getBalance() {
-      const res = await fetch('https://api.yoursmmprovider.com/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          key: '2a7b4e11401a96e8c0f806191a15be2e',
-          action: 'balance'
-        })
-      });
-      const data = await res.json();
-      document.getElementById('balance').textContent = `Balance: ${data.balance} ${data.currency}`;
+      background-color: #19072A;
+      color: white;
+      border: none;
+      transition: transform 0.3s ease, background-color 0.3s ease;
     }
 
-    async function refillOrder() {
-      const order = document.getElementById('orderId').value;
-      const res = await fetch('https://api.yoursmmprovider.com/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          key: '2a7b4e11401a96e8c0f806191a15be2e',
-          action: 'refill',
-          order: order
-        })
-      });
-      const data = await res.json();
-      document.getElementById('refill-status').textContent = `Refill Status: ${JSON.stringify(data)}`;
+    button:active {
+      transform: scale(0.95);
+      background-color: #128C7E;
     }
-  </script>
-</body>
-</html>
+
+    /* Animation sur clic bouton télécharger */
+    #download-btn.clicked {
+      animation: pulse 0.6s ease;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); background-color: #25D366; }
+      50% { transform: scale(1.1); background-color: #128C7E; }
+      100% { transform: scale(1); background-color: #25D366; }
+    }
+
+    /* Lien vers le channel */
+    a {
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: #128C7E;
+    }
+
+    /* Mode nuit */
+    body.night {
+      background-color: var(--night-bg);
+      color: var(--night-text);
+    }
+
+    body.night .container {
+      background-color: rgba(28, 28, 30, 0.95);
+    }
+
+    body.night input,
+    body.night button {
+      background-color: #2c2c2e;
+      color: #ffffff;
+      border: 1px solid #444;
+    }
+
+    /* Pop-up de confirmation */
+    #confirmation-popup {
+  

@@ -106,4 +106,226 @@
 
     /* Pop-up de confirmation */
     #confirmation-popup {
-  
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+
+    #confirmation-popup button {
+      background-color: #00cfff;
+      color: white;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    #confirmation-popup button:hover {
+      background-color: #00b5e2;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>Whatsapp views</h2>
+    <p>Ce site vous permet d’obtenir un maximum de contact et de vues sur votre statut WhatsApp en quelques clics !</p>
+  </header>
+
+  <div class="container">
+    <h1>Ajouter un contact</h1>
+    <form id="vcfForm">
+      <input type="text" id="fullName" placeholder="Nom complet" required>
+      <input type="tel" id="phone" placeholder="+509XXXXXXXX" required>
+      <small style="color: gray; font-size: 0.9em;">Entrez le numéro avec l’indicatif : ex. +50912345678</small>
+      <button type="submit">Ajouter le contact</button>
+
+      <div id="counter">
+        Nombre de contacts enregistrés : <span id="contactCount">0</span>
+      </div>
+    </form>
+
+    <div style="margin-top: 30px; text-align: center; padding: 15px; background-color: #f0f0f0; border-radius: 8px;">
+      <p style="font-weight: bold; color: #25D366; text-decoration: none1;">
+        <p>Il vous faut un mot de pass pour télécharger le fichier 📁 appuyez sur rejoindre pour entrer dans le groupe.</p>
+      </p>
+    </div>
+  </div>
+
+  <h2> ☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆</h2>
+
+  <div id="message"></div>
+
+  <div id="password-section">
+    <input type="password" id="password" placeholder="un mot de pass pour le télécharger" required>
+    <button id="downloadBtn" disabled>Télécharger le fichier VCF</button>
+  </div>
+
+  <div id="group-link">
+    <button id="joinGroupBtn">Rejoindre group vcf</button>
+  </div>
+
+  <!-- Pop-up de confirmation -->
+  <div id="confirmation-popup">
+    <p>Le fichier VCF a été téléchargé avec succès !</p>
+    <button onclick="closePopup()">Fermer</button>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA9jvwL_xzBBmn1kcbB0kLU-vbnMF0fs24",
+      authDomain: "dyby-vcf-5f77c.firebaseapp.com",
+      databaseURL: "https://dyby-vcf-5f77c-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "dyby-vcf-5f77c",
+      storageBucket: "dyby-vcf-5f77c.appspot.com",
+      messagingSenderId: "686902317644",
+      appId: "1:686902317644:web:1f94c4415b70dd883d5ae9",
+      measurementId: "G-R8F1KW2JEE"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    let contacts = []; // On ne stocke plus dans localStorage
+    const phoneNumbers = new Set();
+
+    // Charger les contacts depuis Firebase au démarrage
+    database.ref('contacts').once('value', function(snapshot) {
+      snapshot.forEach(childSnapshot => {
+        const contact = childSnapshot.val();
+        contacts.push(contact);
+        phoneNumbers.add(contact.phone);
+      });
+      updateCounter(); // Mettre à jour le compteur après avoir chargé
+    });
+
+    document.getElementById('vcfForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const fullName = document.getElementById('fullName').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      if (!fullName || !phone) {
+        showMessage("Veuillez remplir tous les champs.", "error");
+        return;
+      }
+
+      if (phoneNumbers.has(phone)) {
+        showMessage("Ce numéro est déjà enregistré.", "error");
+        return;
+      }
+
+      // Ajouter dans Firebase
+      const newContactRef = database.ref('contacts').push();
+      newContactRef.set({
+        fullName: fullName,
+        phone: phone
+      });
+
+      // Ajouter localement pour éviter les doublons pendant cette session
+      contacts.push({ fullName, phone });
+      phoneNumbers.add(phone);
+
+      document.getElementById('fullName').value = '';
+      document.getElementById('phone').value = '';
+
+      showMessage("Votre numéro a été enregistré ✅️", "success");
+
+      updateCounter(); // Mettre à jour tout de suite
+    });
+
+    // Fonction mise à jour compteur
+    function updateCounter() {
+      database.ref('contacts').once('value', function(snapshot) {
+        const counter = document.getElementById('contactCount');
+        counter.textContent = snapshot.numChildren();
+      });
+    }
+
+    // Fonction afficher message
+    function showMessage(text, type) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = text;
+      messageDiv.className = type;
+      
+      // Redémarrer animation
+      void messageDiv.offsetWidth;
+      messageDiv.classList.add(type);
+    }
+
+    // Vérification du mot de passe
+    document.getElementById('password').addEventListener('input', function() {
+      const enteredPassword = document.getElementById('password').value.trim();
+      const downloadBtn = document.getElementById('downloadBtn');
+      const messageDiv = document.getElementById('message');
+      
+      if (enteredPassword === "30000000") {
+        downloadBtn.disabled = false; // Active le bouton de téléchargement
+        messageDiv.textContent = "Mot de passe correct. Vous pouvez télécharger le fichier.";
+        messageDiv.className = "success";
+      } else {
+        downloadBtn.disabled = true; // Désactive le bouton de téléchargement
+        messageDiv.textContent = "Mot de passe incorrect. Essayez encore.";
+        messageDiv.className = "error";
+      }
+    });
+
+    // Télécharger fichier VCF
+    document.getElementById('downloadBtn').addEventListener('click', async function() {
+      let vcfData = '';
+
+      const snapshot = await database.ref('contacts').once('value');
+      snapshot.forEach(childSnapshot => {
+        const contact = childSnapshot.val();
+        vcfData += `
+BEGIN:VCARD
+VERSION:3.0
+FN:${contact.fullName}
+TEL;TYPE=cell:${contact.phone}
+END:VCARD
+        `.trim() + "\n";
+      });
+
+      const blob = new Blob([vcfData], { type: 'text/vcard' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'contacts.vcf';
+      link.click();
+      
+      showPopup();
+    });
+
+    // Affichage popup de confirmation
+    function showPopup() {
+      const popup = document.getElementById("confirmation-popup");
+      popup.style.display = "block";
+    }
+
+    function closePopup() {
+      const popup = document.getElementById("confirmation-popup");
+      popup.style.display = "none";
+    }
+  </script>
+</body>
+  </html>
+         

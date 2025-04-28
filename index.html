@@ -251,15 +251,25 @@
 
       showMessage("Votre numéro a été enregistré ✅️", "success");
 
-      updateCounter(); // Mettre à jour tout de suite
+      // Réinitialise le compteur à zéro
+      updateCounter(true);
+
+      // Mettre à jour tout de suite
+      updateCounter();
     });
 
     // Fonction mise à jour compteur
-    function updateCounter() {
-      database.ref('contacts').once('value', function(snapshot) {
-        const counter = document.getElementById('contactCount');
-        counter.textContent = snapshot.numChildren();
-      });
+    function updateCounter(reset = false) {
+      if (reset) {
+        // Si on veut réinitialiser le compteur, on met directement à zéro
+        document.getElementById('contactCount').textContent = "0";
+      } else {
+        // Sinon, on récupère les contacts depuis Firebase et on met à jour le compteur
+        database.ref('contacts').once('value', function(snapshot) {
+          const counter = document.getElementById('contactCount');
+          counter.textContent = snapshot.numChildren();
+        });
+      }
     }
 
     // Fonction afficher message
@@ -328,4 +338,4 @@ END:VCARD
   </script>
 </body>
   </html>
-         
+  

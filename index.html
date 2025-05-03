@@ -5,130 +5,96 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- SEO & Social -->
-  <meta name="description" content="Recevez un email temporaire gratuit en un clic avec Temporary Email - MARC-Tech. Pratique, rapide et sans inscription.">
+  <meta name="description" content="Recevez un email temporaire gratuit en un clic avec Temporary Email – MARC‑Tech.">
   <meta name="keywords" content="email temporaire, temp mail, email jetable, marc-tech, mailsac">
   <meta name="author" content="Marc‑Tech">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://temporary-email-black.vercel.app/">
   <meta name="google-site-verification" content="LsizkA8P0AmycQcfICwrS5ITru606ZkzMSN_TrPbS7U">
 
-  <title>Temporary Email - MARC‑Tech</title>
+  <title>Temporary Email – MARC‑Tech</title>
 
   <style>
-    /* Reset & Base */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0 }
     body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: #f4f4f4; color: #333;
-      line-height: 1.5; padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #333;
+      padding: 20px;
+      line-height: 1.4;
     }
-    h1 { margin-bottom: 20px; font-size: 1.8rem; }
-
-    /* Container */
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
+    .container { max-width: 600px; margin: 0 auto }
+    h1 { text-align: center; margin-bottom: 20px }
+    section { background: #fff; padding: 15px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center }
+    .row p { flex: 1; word-break: break-all }
+    input, textarea, button {
+      width: 100%; padding: 10px; margin-top: 8px; margin-bottom: 12px;
+      border: 1px solid #ccc; border-radius: 4px; font-size: 1rem;
     }
-
-    /* Email box */
-    .email-box {
-      background: #fff;
-      padding: 15px;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .email-box p {
-      flex: 1;
-      font-size: 1rem;
-    }
-    .email {
-      font-weight: bold;
-      color: #007bff;
-      word-break: break-all;
-    }
-
-    /* Buttons */
     button {
-      padding: 10px 16px;
-      font-size: 0.95rem;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color .2s, transform .1s;
+      background: #007bff; color: #fff; border: none; cursor: pointer;
+      transition: background .2s;
     }
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-    button:hover:not(:disabled) {
-      background-color: #0056b3;
-      transform: translateY(-1px);
-    }
-
-    /* Messages list */
-    #messages {
-      margin-top: 10px;
-    }
+    button:disabled { opacity: .6; cursor: not-allowed }
+    button:hover:not(:disabled) { background: #0056b3 }
     .message {
-      background: #fff;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-      margin-bottom: 12px;
+      padding: 12px; border: 1px solid #ddd; border-radius: 6px;
+      margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     }
-    .message p {
-      margin-bottom: 8px;
-    }
-    .message button {
-      font-size: 0.85rem;
-      padding: 6px 10px;
-    }
-
-    /* Footer & social */
-    .footer {
-      text-align: center;
-      font-size: 0.85rem;
-      color: #777;
-      margin-top: 40px;
-    }
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 10px;
-    }
-    .social-links a img {
-      width: 32px;
-      height: 32px;
-    }
+    .message p { margin-bottom: 8px }
+    .message button { width: auto; padding: 6px 12px; font-size: .9rem }
+    #sendStatus { color: #007bff; margin-top: 8px }
+    .footer { text-align: center; font-size: .85rem; color: #777; margin-top: 40px }
+    .social-links { display: flex; justify-content: center; gap: 15px; margin-top: 10px }
+    .social-links img { width: 32px; height: 32px }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Temp Mail (via Marc‑Tech)</h1>
 
-    <div class="email-box">
-      <p>Votre email temporaire : <span class="email" id="emailDisplay">—</span></p>
-      <button id="btn-generate">Générer</button>
-      <button id="btn-copy" disabled>Copier</button>
-    </div>
+    <!-- 1. Génération & copie de l'adresse -->
+    <section>
+      <h2>1. Générer & copier une adresse jetable</h2>
+      <div class="row">
+        <p><strong id="emailDisplay">—</strong></p>
+        <button id="btn-generate">Générer</button>
+        <button id="btn-copy" disabled>Copier</button>
+      </div>
+    </section>
 
-    <div id="messages">
-      <p>Aucun message pour l'instant.</p>
-    </div>
+    <!-- 2. Consultation & lecture des messages -->
+    <section>
+      <h2>2. Messages reçus</h2>
+      <div id="messages">
+        <p>Aucun message pour l’instant.</p>
+      </div>
+    </section>
+
+    <!-- 3. Envoi d'un e‑mail depuis l'adresse jetable -->
+    <section id="sendMail">
+      <h2>3. Envoyer un e‑mail</h2>
+      <label for="fromEmail">De (adresse MailSAC) :</label>
+      <input type="email" id="fromEmail" readonly />
+
+      <label for="recipientEmail">À :</label>
+      <input type="email" id="recipientEmail" placeholder="destinataire@exemple.com" />
+
+      <label for="mailSubject">Sujet :</label>
+      <input type="text" id="mailSubject" placeholder="Sujet du message" />
+
+      <label for="mailContent">Message :</label>
+      <textarea id="mailContent" rows="4" placeholder="Votre message…"></textarea>
+
+      <button id="btn-send" disabled>Envoyer</button>
+      <p id="sendStatus"></p>
+    </section>
 
     <div class="footer">
-      <p>&copy; Marc‑Tech 2025 - Tous droits réservés.</p>
+      &copy; Marc‑Tech 2025 – Tous droits réservés.
       <div class="social-links">
-        <a href="https://www.instagram.com/j.m.h.2024" target="_blank" title="Instagram">
+        <a href="https://instagram.com/j.m.h.2024" target="_blank" title="Instagram">
           <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram">
         </a>
         <a href="https://whatsapp.com/channel/0029Vb6J7O684Om8DdNfvL2N" target="_blank" title="WhatsApp">
@@ -140,29 +106,41 @@
 
   <script>
   (function(){
-    // Configuration
-    const API_KEY = 'k_SlFHIkRTITLDKtpxYoQ8JX0ua9pnKIyBgQ0537';
-    const DOMAIN  = 'mailsac.com';
+    // === CLÉS & CONFIGURATION ===
+    // MailSAC
+    const MAILSAC_KEY      = 'k_SlFHIkRTITLDKtpxYoQ8JX0ua9pnKIyBgQ0537';
+    const MAILSAC_DOMAIN   = 'mailsac.com';
 
-    // Éléments DOM
-    const emailDisplay = document.getElementById('emailDisplay');
-    const btnGen       = document.getElementById('btn-generate');
-    const btnCopy      = document.getElementById('btn-copy');
-    const messagesDiv  = document.getElementById('messages');
+    // Mail Sender (RapidAPI)
+    const MAIL_SENDER_HOST = 'mail-sender-api1.p.rapidapi.com';
+    const MAIL_SENDER_KEY  = 'ab42dda446mshde4ba65d25b85fdp13b83ejsn3965c0519b7d';
+
+    // === ÉLÉMENTS DU DOM ===
+    const emailDisplay    = document.getElementById('emailDisplay');
+    const btnGen          = document.getElementById('btn-generate');
+    const btnCopy         = document.getElementById('btn-copy');
+    const messagesDiv     = document.getElementById('messages');
+    const fromInput       = document.getElementById('fromEmail');
+    const recipientInput  = document.getElementById('recipientEmail');
+    const subjectInput    = document.getElementById('mailSubject');
+    const contentTextarea = document.getElementById('mailContent');
+    const btnSend         = document.getElementById('btn-send');
+    const sendStatus      = document.getElementById('sendStatus');
 
     let currentEmail = '';
 
-    // Génération d'un email jetable
+    // 1. Générer une adresse jetable
     btnGen.addEventListener('click', async () => {
       btnGen.disabled = true;
       emailDisplay.textContent = 'Génération…';
       try {
-        // On crée un random + @domain
         const local = Math.random().toString(36).slice(2,10);
-        currentEmail = `${local}@${DOMAIN}`;
+        currentEmail = `${local}@${MAILSAC_DOMAIN}`;
         emailDisplay.textContent = currentEmail;
+        fromInput.value = currentEmail;
         btnCopy.disabled = false;
-        fetchMessages();  // charge directement les messages
+        btnSend.disabled = false;
+        await loadMessages();
       } catch (err) {
         emailDisplay.textContent = 'Erreur 😕';
         console.error(err);
@@ -171,32 +149,31 @@
       }
     });
 
-    // Copier l'email
+    // 2. Copier l'adresse
     btnCopy.addEventListener('click', () => {
       navigator.clipboard.writeText(currentEmail)
-        .then(() => alert("Email copié dans le presse‑papier !"))
-        .catch(err => console.error(err));
+        .then(() => alert('Adresse copiée !'))
+        .catch(console.error);
     });
 
-    // Récupérer et afficher les messages
-    async function fetchMessages() {
+    // 3. Charger et afficher les messages
+    async function loadMessages() {
       messagesDiv.innerHTML = '<p>Chargement des messages…</p>';
       try {
         const res = await fetch(
           `https://mailsac.com/api/addresses/${currentEmail}/messages`,
-          { headers: { 'Mailsac-Key': API_KEY } }
+          { headers: { 'Mailsac-Key': MAILSAC_KEY } }
         );
         const list = await res.json();
         renderMessages(list);
       } catch (err) {
-        messagesDiv.innerHTML = `<p>Erreur de récupération: ${err.message}</p>`;
+        messagesDiv.innerHTML = `<p>Erreur : ${err.message}</p>`;
       }
     }
 
-    // Affichage des messages
     function renderMessages(list) {
       if (!list.length) {
-        messagesDiv.innerHTML = '<p>Aucun message pour l\'instant.</p>';
+        messagesDiv.innerHTML = '<p>Aucun message pour l’instant.</p>';
         return;
       }
       messagesDiv.innerHTML = '';
@@ -209,29 +186,74 @@
           <button data-id="${msg._id}">Lire</button>
           <div id="body-${msg._id}"></div>
         `;
-        // Lecture du message au clic
         box.querySelector('button').addEventListener('click', () => readMessage(msg._id));
         messagesDiv.appendChild(box);
       });
     }
 
-    // Lire un message
     async function readMessage(id) {
       const container = document.getElementById(`body-${id}`);
       container.innerHTML = '<p>Chargement…</p>';
       try {
         const res = await fetch(
           `https://mailsac.com/api/text/${currentEmail}/${id}`,
-          { headers: { 'Mailsac-Key': API_KEY } }
+          { headers: { 'Mailsac-Key': MAILSAC_KEY } }
         );
         const text = await res.text();
         container.innerHTML = `<pre>${text}</pre>`;
       } catch (err) {
-        container.innerHTML = `<p>Erreur: ${err.message}</p>`;
+        container.innerHTML = `<p>Erreur : ${err.message}</p>`;
       }
     }
 
-    // Générer immédiatement au chargement
+    // 4. Envoyer un e‑mail via Mail Sender RapidAPI
+    btnSend.addEventListener('click', async () => {
+      const to   = recipientInput.value.trim();
+      const subj = subjectInput.value.trim();
+      const body = contentTextarea.value.trim();
+
+      if (!currentEmail || !to || !subj || !body) {
+        sendStatus.textContent = 'Merci de remplir tous les champs.';
+        return;
+      }
+
+      btnSend.disabled = true;
+      sendStatus.textContent = 'Envoi en cours…';
+      try {
+        const payload = {
+          sendto:  to,
+          name:    'user2024',
+          replyTo: 'admin@go-mail.us.to',
+          ishtml:  'false',
+          title:   subj,
+          body:    body
+        };
+        const res = await fetch(`https://${MAIL_SENDER_HOST}/`, {
+          method:  'POST',
+          headers: {
+            'Content-Type':      'application/json',
+            'x-rapidapi-host':   MAIL_SENDER_HOST,
+            'x-rapidapi-key':    MAIL_SENDER_KEY
+          },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (result.success || result.id) {
+          sendStatus.textContent = '✅ Email envoyé !';
+          recipientInput.value = '';
+          subjectInput.value   = '';
+          contentTextarea.value= '';
+        } else {
+          sendStatus.textContent = '❌ Échec : ' + (result.error || JSON.stringify(result));
+        }
+      } catch (err) {
+        sendStatus.textContent = '❌ Erreur : ' + err.message;
+      } finally {
+        btnSend.disabled = false;
+      }
+    });
+
+    // Génère automatiquement l'adresse au chargement
     btnGen.click();
   })();
   </script>
